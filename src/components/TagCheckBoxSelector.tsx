@@ -1,25 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { getTags } from "../services/api";
+import React  from "react";
+import useTags   from "../hooks/usetags"
 
-interface TagSelectorProps{
+interface TagCheckBoxSelectorProps{
     selectedTags:string[];
     onChange: (tags: string[]) => void
 }
 
-const TagSelector: React.FC<TagSelectorProps> =({ selectedTags, onChange}) =>{
-    const [tagList, setTagList] = useState<string[]>([]);
-    useEffect(() =>{
-        const fetchTags = async () =>{
-            try{
-                const tags = await getTags();
-                setTagList(tags)
-            }catch(error){
-                console.log("Error al cargar los tags: ", error);
-            }
-        }
-        fetchTags();
-    }, []);
-
+const TagCheckBoxSelector: React.FC<TagCheckBoxSelectorProps> =({ selectedTags, onChange}) =>{
+    const tagList = useTags()
     const handleTagChange = (tag:string) =>{
         const updatedTags = selectedTags.includes(tag)
         ? selectedTags.filter((t) => t !== tag)
@@ -44,4 +32,4 @@ const TagSelector: React.FC<TagSelectorProps> =({ selectedTags, onChange}) =>{
     )
 };
 
-export default TagSelector;
+export default TagCheckBoxSelector;

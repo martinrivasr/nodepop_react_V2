@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createAdvert } from "../services/api";
 import Message from "../components/message"
-import TagSelector from "../components/TagSelector";
+import TagCheckBoxSelector from "../components/TagCheckBoxSelector";
 
 const NewAdvertPage = () =>{
     const [name, setName] = useState("");
@@ -109,7 +109,7 @@ const NewAdvertPage = () =>{
                     </div>
                     <div className="mb-3">
                         <label className="form-label">Tags</label>
-                        <TagSelector selectedTags={tags} onChange={setTags}/>
+                        <TagCheckBoxSelector selectedTags={tags} onChange={setTags}/>
                     </div>
                     
                     <div className="mb-3">

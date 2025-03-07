@@ -1,13 +1,18 @@
-import React, { useState}from "react";
+import React, { useEffect, useState}from "react";
 import { FiltersType } from "../models/models";
+import { getTags } from "../services/api";
+import TagDropdownSelector from "./TagDropDownSelector";
 
 interface FiltersProps {
   filters: FiltersType;
   onFilterChange: (newFilters: FiltersType) => void;
 }
 
+
+
 const Filters: React.FC<FiltersProps> = ({ filters, onFilterChange }) => {
   const [localFilters, setLocalFilters] = useState(filters);
+  
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -43,25 +48,7 @@ const Filters: React.FC<FiltersProps> = ({ filters, onFilterChange }) => {
           <label htmlFor="tag" className="form-label">
             Tag
           </label>
-          <select
-              id="tag"
-              name="tag"
-              className="form-select"
-              multiple
-              value={filters.tag}
-              onChange={(e) =>
-                onFilterChange({
-                  ...filters,
-                  tag: Array.from(e.target.selectedOptions, (option) => option.value),
-                })
-              }
-            >
-
-            <option value="work">Work</option>
-            <option value="lifestyle">Lifestyle</option>
-            <option value="motor">Motor</option>
-            <option value="mobile">Mobile</option>
-          </select>
+          <TagDropdownSelector selectedTags={filters.tag} onChange={(tags) => onFilterChange({ ...filters, tag:tags })} />          
         </div>
         <div className="mb-3">
           <label htmlFor="minPrice" className="form-label">

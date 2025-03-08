@@ -8,10 +8,10 @@ import { isApiClientError } from "../services/connection";
 import { createPortal } from "react-dom";
 import portalStyles from "../utils/portalStyles"
 import FormField from "../components/inputForm";
-import storage from "../utils/storage";
 
 
-const LoginPage = () => {
+
+export default function LoginPage () {
   const location = useLocation()
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState(() => ({
@@ -123,21 +123,21 @@ const LoginPage = () => {
   );
 };
 
-export default function LoginPagePortal() {
-  const portalContainer = useRef<HTMLDivElement>(document.createElement("div"));
+//export default function LoginPagePortal() {
+//  const portalContainer = useRef<HTMLDivElement>(document.createElement("div"));
 
-  useEffect(() => {
-    portalContainer.current.className = "container";
+//  useEffect(() => {
+//    portalContainer.current.className = "container";
 
-    const externalWindow = window.open("", "", "width=400, height=550");
+//    const externalWindow = window.open("", "", "width=400, height=550");
 
-    externalWindow?.document.body.appendChild(portalContainer.current);
-    portalStyles(window.document, externalWindow!.document);
+//    externalWindow?.document.body.appendChild(portalContainer.current);
+ //   portalStyles(window.document, externalWindow!.document);
 
-    return () => {
-      externalWindow?.close();
-    };
-  }, []);
+ //   return () => {
+ //     externalWindow?.close();
+ //   };
+//  }, []);
 
-  return createPortal(<LoginPage />, portalContainer.current);
-}
+//  return createPortal(<LoginPage />, portalContainer.current);
+//}

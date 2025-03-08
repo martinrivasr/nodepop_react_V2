@@ -9,7 +9,7 @@ export const login = async (credentials: Credentials, rememberMe:boolean) => {
       const response = await api.post<Login>("/auth/login", credentials);
      // console.log("Respuesta de la API login:", response.data);
       const { accessToken } = response.data;
-      console.log("estado de rememberMe en api-login(): ", rememberMe)
+     // console.log("estado de rememberMe en api-login(): ", rememberMe)
       storage.set("auth", accessToken);
       setAuthorizationHeader(accessToken);
 
@@ -24,9 +24,9 @@ export const login = async (credentials: Credentials, rememberMe:boolean) => {
   
   // Deslogear a un usuario
 export const logout = async (rememberMe:boolean) => {
-  console.log("Estado de rememberme en api- logout", rememberMe)
+  //console.log("Estado de rememberme en api- logout", rememberMe)
   if(!rememberMe){
-    console.log("estdo de rememberme antes del borrado", rememberMe)
+  //  console.log("estdo de rememberme antes del borrado", rememberMe)
     storage.remove("auth");
   }
   removeAuthorizationheader();

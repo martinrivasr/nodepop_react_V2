@@ -1,4 +1,4 @@
-import {Routes, Route, Link } from "react-router-dom";
+import {Routes, Route, Link, Navigate } from "react-router-dom";
 import Navbar from "./containers/Header/Navbar";
 import AdvertsPage from "./pages/AdvertsPage";
 import SignupPage from "./pages/SignupPage";
@@ -6,16 +6,13 @@ import NewAdvertPage from "./pages/NewAdvertPage";
 import NotFoundPage from "./pages/NotFoundPage"
 import AdvertDetailPage from "./pages/AdvertDetailPage"
 import RequireAuth from "./auth/requireAuth";
-import { AuthProvider} from "./auth/autoProvider"
-import ErrorBoundary from "./components/ErrorBoundary";
 import LoginPagePortal from "./pages/LoginPage";
 
 
 function App() {
 
   return (
-    <ErrorBoundary>
-        <AuthProvider defaultIsLogged={false}>
+        <div className="app">
           <Navbar /> 
           <Routes>
             <Route 
@@ -25,8 +22,23 @@ function App() {
               } 
             />
             <Route path="/signup" element={<SignupPage />} />
-            <Route path="/adverts" element={<AdvertsPage />} />
-            <Route path="/adverts/:id" element={<AdvertDetailPage />} />
+            <Route 
+              path="/adverts" 
+              element={
+                <RequireAuth>
+                  <AdvertsPage />
+                </RequireAuth>
+              } 
+            />
+            <Route 
+              path="/adverts/:id" 
+              element={
+                <RequireAuth>
+                    <AdvertDetailPage />
+                </RequireAuth>
+                
+              } 
+            />
             <Route 
               path="/adverts/new" 
               element={
@@ -35,10 +47,11 @@ function App() {
                 </RequireAuth>
               } 
             />
+            <Route path="/" element={<Navigate to="/adverts"/>}/>
+            <Route path="404" element={<Navigate to="/404"/>}/>
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
-        </AuthProvider>
-    </ErrorBoundary>
+        </div>
   );
 }
 

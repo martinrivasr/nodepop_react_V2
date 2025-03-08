@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { AuthContext } from "./context";
 import storage from '../utils/storage';
 
@@ -11,7 +11,9 @@ interface Props {
 
 export function AuthProvider ({ defaultIsLogged, children, rememberMeProps }: Props){
     const [isLogged, setIsLogged] = useState(defaultIsLogged || !!storage.get("auth"));
+    //console.log("estado de logeado despues de obtener estado", isLogged)
     const [rememberMe, setRememberMe ] = useState(rememberMeProps || false)
+
 
     const handleLogin = (remember: boolean) => {
         setIsLogged(true);

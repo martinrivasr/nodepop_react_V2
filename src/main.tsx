@@ -27,7 +27,7 @@ createRoot(rootElement).render(
   <StrictMode>
     <ErrorBoundary>
       <BrowserRouter>
-        <AuthProvider defaultIsLogged={false}>
+        <AuthProvider defaultIsLogged={!!accessToken}>
           <App />
         </AuthProvider>
       </BrowserRouter>

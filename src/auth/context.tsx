@@ -2,14 +2,14 @@ import  { createContext, useContext } from "react";
 
 export interface AuthContextValue {
     isLogged: boolean;
-    rememberLogin: boolean;
-    onLogin: () => void; 
+    rememberMe:boolean;
+    onLogin: (remember: boolean) => void;
     onLogout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextValue>({
     isLogged: false,
-    rememberLogin: false,
+    rememberMe: false,
     onLogin: () =>{},
     onLogout: () => {},
 });

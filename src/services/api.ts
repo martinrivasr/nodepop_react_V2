@@ -4,13 +4,16 @@ import storage from '../utils/storage.ts';
 
 
 
-export const login = async (credentials: Credentials) => {
+export const login = async (credentials: Credentials, rememberMe:boolean) => {
   try {
       const response = await api.post<Login>("/auth/login", credentials);
-      console.log("Respuesta de la API:", response.data);
+     // console.log("Respuesta de la API login:", response.data);
       const { accessToken } = response.data;
+      console.log("estado de rememberMe en api-login(): ", rememberMe)
       storage.set("auth", accessToken);
       setAuthorizationHeader(accessToken);
+
+
   } catch (error) {
       console.error("Error en login:", error);
       throw error; 
@@ -20,12 +23,13 @@ export const login = async (credentials: Credentials) => {
 
   
   // Deslogear a un usuario
-export const logout = async (rememberLogin: boolean) => {
-  console.log( "estado de rememberme ", rememberLogin)
-  if (!rememberLogin) { 
+export const logout = async (rememberMe:boolean) => {
+  console.log("Estado de rememberme en api- logout", rememberMe)
+  if(!rememberMe){
+    console.log("estdo de rememberme antes del borrado", rememberMe)
     storage.remove("auth");
-    removeAuthorizationheader();
   }
+  removeAuthorizationheader();
 };
 
 
@@ -77,7 +81,7 @@ export const createAdvert = async (data: CreateAdvertDto): Promise<Advert> => {
       if (filters.tag ) params.tags = filters.tag;
     
       const response = await api.get<Advert[]>("/v1/adverts", { params });
-      console.log("Respuesta de la API de getAdverts:", response.data)
+     // console.log("Respuesta de la API de getAdverts:", response.data)
       return response.data;
     } catch (error) {
       console.log("Error en getadverts:", error)

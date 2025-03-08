@@ -29,11 +29,11 @@ const Pagination: React.FC<PaginationProps> = ({
   const endPage = Math.min(startPage + maxVisiblePages - 1, totalPages); 
 
   const handlePageChange = (page: number) => {
-    console.log("pagina actual : ", page)
-    console.log("total paginas :" , totalPages)
+    //console.log("pagina actual : ", page)
+    //console.log("total paginas :" , totalPages)
     if (page > 0 && page <= totalPages) {
       onPageChange(page);
-      console.log("onPageChange :" , page)
+      //console.log("onPageChange :" , page)
       const newBatch = Math.floor((page - 1) / maxVisiblePages); 
       
       if (newBatch !== pageBatch) {

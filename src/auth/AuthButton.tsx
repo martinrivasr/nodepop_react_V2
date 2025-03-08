@@ -4,7 +4,8 @@ import { logout } from "../services/api";
 
 
 export default function AuthButton() {
-  const { isLogged, onLogout } = useAuth();
+  const { isLogged, rememberMe, onLogout } = useAuth();
+  console.log("estado de rememberme cuando ingresas a boton de auth:", rememberMe)
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
@@ -16,16 +17,14 @@ export default function AuthButton() {
   };
 
 
-  const handleLogoutClick = async () => {
-    const rememberMe = localStorage.getItem("rememberLogin") === "true";
-    console.log("Valor de rememberMe al hacer logout:", rememberMe);
-    await logout(rememberMe)
-    console.log("Valor de rememberMe al hacer logout:", rememberMe);
+  const handleLogoutClick = async (rememberMe?:boolean) => {
+    console.log("estado de rememberMe en authButton-logout(): ", rememberMe)
+    await logout(rememberMe ?? false)
     onLogout();
   };
 
   return isLogged ? (
-    <button  className="btn btn-primary  ms-3" onClick={handleLogoutClick}>
+    <button className="btn btn-primary  ms-3" onClick={() => handleLogoutClick(rememberMe) }>
       Logout
     </button>
   ) : (

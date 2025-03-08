@@ -38,9 +38,9 @@ const AdvertsPage = () => {
           ...filters,
           sale: filters.sale !== undefined ? filters.sale : undefined, 
         };
-        console.log("entrado a getadverts")
+        //console.log("entrado a getadverts")
         const response = await getAdverts(activeFilters);
-        console.log("total Advertrs recibidos", response)
+        //console.log("total Advertrs recibidos", response)
         const total = response.length;
         
         setTotalRecords(total);
@@ -93,13 +93,13 @@ const AdvertsPage = () => {
   };
 
   const handleOrderChange = (newOrder: string) => {
-    console.log("Cambiando orden a:", newOrder);
+    //console.log("Cambiando orden a:", newOrder);
     setOrder(newOrder);
     setCurrentPage(1);
   };
 
   const handleSortFieldChange = (field: string) => {
-    console.log("Cambiando campo de orden a:", field);
+   // console.log("Cambiando campo de orden a:", field);
     setSortField(field);
     setOrder("asc")
     setCurrentPage(1);

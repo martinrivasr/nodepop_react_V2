@@ -1,4 +1,4 @@
-type StorageKey = "auth" | "rememberLogin"; 
+type StorageKey = "auth" ; 
 
 const storage = {
     get(key:StorageKey){

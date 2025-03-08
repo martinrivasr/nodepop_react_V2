@@ -29,11 +29,10 @@ const LoginPage = () => {
     event.preventDefault();
     try {
       setIsLoading(true);
-      const response = await loginApi(credentials);
-      console.log("respuesta de API",response)
+      console.log("estado de Rememberme: ", rememberMe)
+      const response = await loginApi(credentials, rememberMe);
       setMessage({ type: "success", text: "Inicio de sesión exitoso. Redirigiendo..." });
-      onLogin();
-      storage.set("rememberLogin", rememberMe.toString());
+      onLogin(rememberMe);
       const to = location.state?.from ?? "/adverts"
       navigate(to, { replace: true}); 
     } catch (error) {
@@ -53,9 +52,6 @@ const LoginPage = () => {
     });
   };
 
-  const handleRememberMe = () =>{
-    setRememberMe((prev) => !prev)
-  } 
 
   const { email, password } = credentials;
 
@@ -90,7 +86,7 @@ const LoginPage = () => {
                 type="checkbox"
                 id="rememberMe"
                 checked={rememberMe}
-                onChange={handleRememberMe}
+                onChange={() =>setRememberMe(!rememberMe)}
               />
               <label htmlFor="rememberMe" className="form-check-label">
                 Remember me

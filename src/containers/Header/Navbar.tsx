@@ -5,9 +5,9 @@ import ProfileMenu from "./ProfileMenu";
 import { useAuth } from "../../auth/context";
 import AuthButton from "../../auth/AuthButton"
 
-const Navbar = () => {
-  const { isLogged } = useAuth();
 
+const Navbar = () => {
+  const { isLogged } = useAuth(); 
 
   return (
     <header className="navbar navbar-expand-lg navbar-dark bg-dark px-3 border-warning border-4">

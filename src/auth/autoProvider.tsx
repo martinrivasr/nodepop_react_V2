@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode, useState } from "react";
 import { AuthContext } from "./context";
 import storage from '../utils/storage';
 
@@ -6,40 +6,25 @@ import storage from '../utils/storage';
 interface Props {
     defaultIsLogged: boolean;
     children : ReactNode;
+    rememberMeProps?: boolean
 }
 
-export function AuthProvider ({ defaultIsLogged, children }: Props){
+export function AuthProvider ({ defaultIsLogged, children, rememberMeProps }: Props){
     const [isLogged, setIsLogged] = useState(defaultIsLogged || !!storage.get("auth"));
-    const [rememberLogin, setRememberLogin] = useState(false);
+    const [rememberMe, setRememberMe ] = useState(rememberMeProps || false)
 
-
-    useEffect(() => {
-        if (storage.get("auth")) {
-            setIsLogged(true);
-        }else {
-            setIsLogged(false);
-        }
-    }, []);
-
-    const handleLogin = () =>{
+    const handleLogin = (remember: boolean) => {
         setIsLogged(true);
+        setRememberMe(remember); 
     };
 
     const handleLogout = () =>{
-        const rememberMe = storage.get("rememberLogin") === "true";
-        console.log("Estado de rememberMe en logout:", rememberMe);
-        if (!rememberMe) {
-            storage.remove("auth");
-            setIsLogged(false);
-        } else {
-            setIsLogged(false);
-        }
-        
+        setIsLogged(false); 
     }
 
     const authValue = {
         isLogged,
-        rememberLogin,
+        rememberMe,
         onLogin: handleLogin,
         onLogout: handleLogout,
     };

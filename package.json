@@ -12,6 +12,8 @@
     "initDB:api": "node dist/initializeDB.cjs"
   },
   "dependencies": {
+    "@redux-devtools/extension": "^3.3.0",
+    "@reduxjs/toolkit": "^2.6.1",
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
@@ -21,8 +23,11 @@
     "path": "^0.12.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.5",
     "readline": "^1.3.0",
+    "redux": "^5.0.1",
+    "redux-thunk": "^3.1.0",
     "styled-components": "^6.1.15"
   },
   "devDependencies": {

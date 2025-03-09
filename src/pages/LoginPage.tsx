@@ -5,44 +5,54 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import Message from "../components/message";
 import { ApiClientError } from "../utils/error";
 import { isApiClientError } from "../services/connection";
-import { createPortal } from "react-dom";
-import portalStyles from "../utils/portalStyles"
 import FormField from "../components/inputForm";
-
-
+import { useAppDispatch, useAppSelector } from "../store";
+import { authLogin } from "../store/actions";
+import { getIslogged } from "../store/selectors";
 
 export default function LoginPage () {
-  const location = useLocation()
-  const navigate = useNavigate();
+  //const location = useLocation()
+  //const navigate = useNavigate();
   const [credentials, setCredentials] = useState(() => ({
     email: "",
     password: "",
   }));
-  const [error, setError] = useState<ApiClientError | null>(null);
-  const [isLoading, setIsLoading ] = useState(false)
+  //const [error, setError] = useState<ApiClientError | null>(null);
+  //const [isLoading, setIsLoading ] = useState(false)
   const [rememberMe, setRememberMe ] = useState(false)
+  //const [isLogged, setisLogged ] = useState(false)
   const [message, setMessage] = useState<{ type: "success" | "error" | "info"; text: string } | null>(null);
-  const { onLogin } = useAuth();
-
+  //const { onLogin } = useAuth();
+  const dispatch = useAppDispatch ();
+  const isLogged = useAppSelector(getIslogged);
+  //const { pending, error } = useAppSelector(getui)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      setIsLoading(true);
-      console.log("estado de Rememberme: ", rememberMe)
-      const response = await loginApi(credentials, rememberMe);
+ //   try {
+     // setIsLoading(true);
+     // console.log("estado de Rememberme: ", rememberMe)
+      //const response = await loginApi(credentials, rememberMe);
+      //console.log("valor de islogged en loginpage:", isLogged)
+      //console.log("valor de Rememberme en loginpage:", rememberMe)
+      dispatch(authLogin(credentials, rememberMe))
       setMessage({ type: "success", text: "Inicio de sesión exitoso. Redirigiendo..." });
-      onLogin(rememberMe);
-      const to = location.state?.from ?? "/adverts"
-      navigate(to, { replace: true}); 
-    } catch (error) {
-      if(isApiClientError(error)){
-        setError(error)
-      }
-      setMessage({ type: "error", text: "Credenciales incorrectas. Intenta nuevamente." });
-    } finally{
-      setIsLoading(false)
-    }
+     
+
+     // useEffect(() => {
+     //     console.log("Estado de isLogged en Redux:", isLogged);
+     // }, [isLogged]);
+      console.log("ya paso el dispatch")
+      //onLogin(rememberMe);
+      //const to = location.state?.from ?? "/"
+      //navigate(to, { replace: true}); 
+   // } 
+    //catch (error) {
+    //  if(isApiClientError(error)){
+     //   setError
+     // }
+  //    setMessage({ type: "error", text: "Credenciales incorrectas. Intenta nuevamente." });
+  //  }
   };
 
 

@@ -1,26 +1,31 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/context";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../store/index.ts";
 import { logout } from "../services/api";
 import storage from "../utils/storage.ts"
 import { setAuthorizationHeader } from "../services/connection.ts";
+import { getIslogged } from "../store/selectors.ts";
+import { authLogout } from "../store/actions.ts";
 
 
 export default function AuthButton() {
   const location = useLocation()
   const navigate = useNavigate();
   const accessToken = storage.get("auth");
-  const { isLogged, rememberMe, onLogin, onLogout } = useAuth();
+  const { isLogged, rememberMe } = useAppSelector(getIslogged);
+  const dispatch = useAppDispatch()
 
-  if (accessToken){
-    setAuthorizationHeader(accessToken)
-  }
+  useEffect(() => {
+    if (accessToken) {
+      setAuthorizationHeader(accessToken);
+    }
+  }, [accessToken]);
 
-  //console.log("estado de login cuando presionas login:", isLogged)
+
   const handleLoginClick = () => {
     if (!isLogged && !accessToken){
       navigate("/login");
     } else {
-      onLogin(rememberMe);
       const to = location.state?.from ?? "/adverts"
       navigate(to, { replace: true}); 
     }
@@ -29,7 +34,7 @@ export default function AuthButton() {
 
   const handleLogoutClick = async (rememberMe?:boolean) => {
     await logout(rememberMe ?? false)
-    onLogout();
+    dispatch(authLogout())
   };
 
   return isLogged ? (

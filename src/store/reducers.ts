@@ -25,10 +25,9 @@ export function auth(
     ):State["auth"]{
         switch (action.type){
             case "auth/login/fulfilled":
-                console.log("Redux: Acción de login ejecutada")
                 return {
                     isLogged : true,
-                    rememberMe: state.rememberMe
+                    rememberMe: action.payload.rememberMe
                }
             case "auth/logout":
                 return {

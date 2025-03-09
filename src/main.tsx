@@ -18,6 +18,8 @@ const accessToken = storage.get("auth");
 if (accessToken){
   setAuthorizationHeader(accessToken)
 }
+
+
 const preloadedState: Partial<State>  = {
   auth:{
     isLogged :!!accessToken,

@@ -1,0 +1,51 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AuthButton Snapshot Test > Debe coincidir con el snapshot cuando el usuario ESTÁ logueado 1`] = `
+<DocumentFragment>
+  <button
+    class="btn btn-primary  ms-3"
+  >
+    Logout
+  </button>
+</DocumentFragment>
+`;
+
+exports[`AuthButton Snapshot Test > Debe coincidir con el snapshot cuando el usuario NO está logueado 1`] = `
+<DocumentFragment>
+  <button
+    class="btn btn-primary ms-auto"
+  >
+    Login
+  </button>
+</DocumentFragment>
+`;
+
+exports[`AuthButton Snapshot Test > shpuld match with the snapshot when the user is logged 1`] = `
+<DocumentFragment>
+  <button
+    class="btn btn-primary ms-auto"
+  >
+    Login
+  </button>
+</DocumentFragment>
+`;
+
+exports[`AuthButton Snapshot Test > shpuld match with the snapshot when the user is not logged 1`] = `
+<DocumentFragment>
+  <button
+    class="btn btn-primary ms-auto"
+  >
+    Login
+  </button>
+</DocumentFragment>
+`;
+
+exports[`AuthButton Snapshot Test > shpuld match with the snapshot when the user is not logged 2`] = `
+<DocumentFragment>
+  <button
+    class="btn btn-primary ms-auto"
+  >
+    Login
+  </button>
+</DocumentFragment>
+`;

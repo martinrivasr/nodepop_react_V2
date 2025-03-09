@@ -4,7 +4,8 @@ import { isApiClientError } from "../services/connection";
 
 
 type AuthLoginFulfilled = {
-    type: "auth/login/fulfilled"
+    type: "auth/login/fulfilled";
+    payload: { rememberMe: boolean };
 }
 
 type AuthLoginRejected = {
@@ -21,8 +22,9 @@ type UiResetError = {
 }
 
 
-export const authLoginFulfilled = (): AuthLoginFulfilled =>({
-    type: "auth/login/fulfilled"
+export const authLoginFulfilled = (payload: { rememberMe: boolean }): AuthLoginFulfilled =>({
+    type: "auth/login/fulfilled",
+    payload,
 })
 
 
@@ -42,10 +44,10 @@ export const uiResetError = (): UiResetError =>({
 export function authLogin(credentials:Credentials, rememberMe:boolean): Appthunk<Promise<void>>{
     return async function (dispatch, _getState, {api, router }){
         console.log("Ejecutando authLogin");
-        dispatch(authLoginFulfilled());
+
         try {
             await api.services.login(credentials,rememberMe)
-            dispatch(authLoginFulfilled())
+            dispatch(authLoginFulfilled({ rememberMe }));
             const to = router.state.location.state?.from ?? "/";
             router.navigate(to, { replace:true});
         } catch (error) {

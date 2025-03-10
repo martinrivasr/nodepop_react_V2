@@ -3,16 +3,17 @@ import Pagination from "../components/Pagination";
 import ProductList from "../components/ProductList";
 import Filters from "../components/Filters";
 import Footer from "../components/footer";
-import { getAdverts } from "../services/api";
 import { FiltersType, Advert } from "../models/models";
 import { useFilteredAdverts } from "../hooks/useFilteredAdverts";
+import { useAppDispatch, useAppSelector } from "../store";
+import { advertsLoaded } from "../store/actions";
+import { getadvertsSelector, getIslogged, getUi } from "../store/selectors";
 
 
 const AdvertsPage = () => {
   const [allAdverts, setAllAdverts ] = useState<Advert[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
+  const { isLogged, } = useAppSelector(getIslogged);
+  
 
   const [filters, setFilters] = useState<FiltersType>({
     tag: [],
@@ -26,35 +27,27 @@ const AdvertsPage = () => {
   const [currentPage, setCurrentPage] = useState<number>(1); 
   const [order, setOrder] = useState<string>("asc"); 
   const [sortField, setSortField] = useState<string>("name"); 
+  const {pending, message} = useAppSelector(getUi)
   
-
-
-
+  const adverts = useAppSelector(getadvertsSelector);
+ 
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const fetchAdverts = async () => {
-      setLoading(true);
-      setError("");
+    
+    dispatch(advertsLoaded());
+}, [dispatch]); 
 
-      try {
-        const response = await getAdverts();
-        setAllAdverts(response)
-      } catch (err) {
-        console.error("Error al cargar los anuncios:", err);
-        setError("Error al cargar los anuncios. Por favor, intenta de nuevo.");
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+    setAllAdverts(adverts);
+    
+}, [adverts]); 
 
-    fetchAdverts();
-  }, []);
 
   const { filteredAdverts, totalRecords  } = useFilteredAdverts(
     allAdverts, filters, limit, currentPage, order, sortField
   );
   
-
     const handleFilterChange = (newFilters: FiltersType) => {
       setFilters((prevFilters) => {
         const updatedFilters = {
@@ -76,13 +69,11 @@ const AdvertsPage = () => {
   };
 
   const handleOrderChange = (newOrder: string) => {
-    //console.log("Cambiando orden a:", newOrder);
     setOrder(newOrder);
     setCurrentPage(1);
   };
 
   const handleSortFieldChange = (field: string) => {
-   // console.log("Cambiando campo de orden a:", field);
     setSortField(field);
     setOrder("asc")
     setCurrentPage(1);
@@ -107,10 +98,10 @@ const AdvertsPage = () => {
                 onSortFieldChange={handleSortFieldChange}
               />
               <h2 className="text-center">Listado de productos</h2>
-              {loading && <p className="text-center">Cargando anuncios...</p>}
-              {error && <p className="text-center text-danger">{error}</p>}
+              {!isLogged && <p className="text-center">Cargando anuncios...</p>}
+              {message?.text && <p className="text-center text-danger">{message.text}</p>}
               <p>Ordenando por: <strong>{sortField}</strong> | Orden: <strong>{order}</strong></p>
-              {!loading && !error && <ProductList adverts={filteredAdverts} />}
+              {isLogged && <ProductList adverts={filteredAdverts} />}
             </div>
 
           </main>

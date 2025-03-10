@@ -51,6 +51,22 @@ export function auth(
                 return { pending:false, message:{type: "error", text : action.payload}};
             case "auth/logout":
                 return { ...state, message:{type: "success", text: "Sesión cerrada correctamente"}}
+            case "advert/loaded/rejected":
+                return { pending:false, message:{type: "error", text : action.payload}};
+            default:
+                return state;
+        }
+    }
+
+    export function adverts (
+        state = defaultState.adverts,
+        action: Actions,
+    ): State["adverts"] {
+        switch(action.type) {
+            case "advert/loaded/fulfilled":
+                return state.data === action.payload.data
+                        ? state
+                        : { ...state, data: action.payload.data, loaded: action.payload.loaded };
             default:
                 return state;
         }

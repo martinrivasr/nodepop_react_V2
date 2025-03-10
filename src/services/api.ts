@@ -7,13 +7,9 @@ import storage from '../utils/storage.ts';
 export const login = async (credentials: Credentials, rememberMe:boolean) => {
   try {
       const response = await api.post<Login>("/auth/login", credentials);
-     // console.log("Respuesta de la API login:", response.data);
       const { accessToken } = response.data;
-     // console.log("estado de rememberMe en api-login(): ", rememberMe)
       storage.set("auth", accessToken);
       setAuthorizationHeader(accessToken);
-
-
   } catch (error) {
       console.error("Error en login:", error);
       throw error; 
@@ -24,9 +20,9 @@ export const login = async (credentials: Credentials, rememberMe:boolean) => {
   
   // Deslogear a un usuario
 export const logout = async (rememberMe:boolean) => {
-  //console.log("Estado de rememberme en api- logout", rememberMe)
+ 
   if(!rememberMe){
-  //  console.log("estdo de rememberme antes del borrado", rememberMe)
+
     storage.remove("auth");
   }
   removeAuthorizationheader();

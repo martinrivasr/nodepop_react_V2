@@ -5,10 +5,10 @@ import { authLoginFulfilled, authLogout } from "../actions";
 describe("Auth Reducer", () => {
   test("should manage  'auth/login/fulfilled' and update the state", () => {
     const initialState = { isLogged: false, rememberMe: false };
-    const action = authLoginFulfilled();
+    
 
     const expectedState = { isLogged: true, rememberMe: false };
-
+    const action = authLoginFulfilled(initialState);
     expect(auth(initialState, action)).toEqual(expectedState);
   });
 

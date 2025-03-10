@@ -23,7 +23,6 @@ const Filters: React.FC<FiltersProps> = ({ filters, onFilterChange }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(),
-    console.log("📌 Filtros enviados desde Filters.tsx:"),
     onFilterChange(localFilters);
   };
 

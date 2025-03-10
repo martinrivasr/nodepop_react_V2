@@ -1,4 +1,4 @@
-import { Credentials } from "../models/models";
+import { Advert, Credentials } from "../models/models";
 import { Appthunk } from ".";
 import { isApiClientError } from "../services/connection";
 
@@ -24,6 +24,16 @@ type UiResetError = {
     type: "ui/reset-error"
 }
 
+type AdvertsLoadedFulfilled = {
+    type: "advert/loaded/fulfilled"
+    payload: { data: Advert[], loaded: boolean}
+}
+
+type AdvertsLoadedRejected = {
+    type: "advert/loaded/rejected";
+    payload: string
+}
+
 export const authLoginPending = (): AuthLoginPending => ({
     type: "auth/login/pending"
 })
@@ -32,7 +42,6 @@ export const authLoginFulfilled = (payload: { rememberMe: boolean }): AuthLoginF
     type: "auth/login/fulfilled",
     payload,
 })
-
 
 export const authLoginRejected = (error: Error): AuthLoginRejected =>({
     type:"auth/login/rejected",
@@ -47,6 +56,20 @@ export const uiResetError = (): UiResetError =>({
     type: "ui/reset-error"
 })
 
+export const advertLoadedFulfilled = (
+    adverts: Advert[],
+    loaded?: boolean,
+): AdvertsLoadedFulfilled =>({
+    type: "advert/loaded/fulfilled",
+    payload: { data: adverts, loaded: !!loaded}
+})
+
+export const advertLoadedRejected = (error:Error): AdvertsLoadedRejected =>({
+    type: "advert/loaded/rejected",
+    payload: error.message
+})
+
+
 export function authLogin(credentials:Credentials, rememberMe:boolean): Appthunk<Promise<void>>{
     return async function (dispatch, _getState, {api, router }){
         dispatch(authLoginPending())
@@ -59,11 +82,31 @@ export function authLogin(credentials:Credentials, rememberMe:boolean): Appthunk
             if(isApiClientError(error)){
                 dispatch(authLoginRejected(error))
             }
-            
         }
 
     }
 }
+
+export function advertsLoaded(): Appthunk<Promise<void>> {
+    return async function (dispatch, getState, { api }) {
+        const state = getState();
+        if (state.adverts.loaded) {
+            return;
+        }
+
+        try {
+            const adverts = await api.services.getAdverts();
+            dispatch(advertLoadedFulfilled(adverts, true));
+        } catch (error) {
+            if(isApiClientError(error)){
+                console.error("Error al cargar anuncios:", error);
+                dispatch(advertLoadedRejected(error));
+            }
+
+        }
+    };
+}
+
 
 export type Actions = 
 | AuthLoginPending
@@ -71,3 +114,5 @@ export type Actions =
 | AuthLoginFulfilled
 | AuthLoginRejected
 | UiResetError
+| AdvertsLoadedFulfilled
+| AdvertsLoadedRejected

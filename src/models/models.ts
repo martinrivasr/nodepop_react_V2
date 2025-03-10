@@ -35,7 +35,7 @@ export interface SignupDto {
   }
   
   // Modelo para el esquema de tags
-  export type Tag = "lifestyle" | "mobile" | "motor" | "work";
+  export type Tag = string;
   
   // Respuesta para Advert
   export interface Advert {

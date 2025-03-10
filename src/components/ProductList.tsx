@@ -7,7 +7,6 @@ interface ProductListProps {
 
 const ProductList: React.FC<ProductListProps> = ({ adverts }) => {
   const navigate = useNavigate()
-  
   const handleSelectProduct = (id: string) => {
     navigate(`/adverts/${id}`)
   }

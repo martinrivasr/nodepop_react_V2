@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import {  Link } from "react-router-dom";
 import Message from "../components/message";
 import FormField from "../components/inputForm";
-import { useAppDispatch } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
 import { authLogin } from "../store/actions";
+import { getUi } from "../store/selectors";
 
 
 export default function LoginPage () {
@@ -14,14 +15,12 @@ export default function LoginPage () {
   }));
  
   const [rememberMe, setRememberMe ] = useState(false)
-  const [message, setMessage] = useState<{ type: "success" | "error" | "info"; text: string } | null>(null);
   const dispatch = useAppDispatch ();
+  const {pending, message} = useAppSelector(getUi)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
       dispatch(authLogin(credentials, rememberMe))
-      setMessage({ type: "success", text: "Inicio de sesión exitoso. Redirigiendo..." });
   };
 
 

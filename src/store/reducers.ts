@@ -6,7 +6,7 @@ export type State = {
     adverts: { data:Advert[] | null; loaded: boolean};
     ui: {
         pending:boolean;
-        error:Error| null;
+        message: { type: "success" | "error" | "info"; text: string} | null;
     };
 };
 
@@ -15,7 +15,7 @@ const defaultState: State = {
     adverts: {data:null, loaded:false},
     ui: {
         pending:false,
-        error:null,
+        message: null,
     }
 };
 
@@ -42,9 +42,15 @@ export function auth(
     export function ui(state = defaultState.ui, action:Actions): State["ui"] {
         switch(action.type){
             case "ui/reset-error":
-                return { ...state, error:null}
+                return { ...state, message:null}
+            case "auth/login/pending":
+                return { pending: true, message: null}
+            case "auth/login/fulfilled":
+                return {... state, message: {type: "success", text: "Inicio de sesión existoso"}}
             case "auth/login/rejected":
-                return { pending:false, error:action.payload};
+                return { pending:false, message:{type: "error", text : action.payload}};
+            case "auth/logout":
+                return { ...state, message:{type: "success", text: "Sesión cerrada correctamente"}}
             default:
                 return state;
         }

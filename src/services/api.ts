@@ -1,5 +1,5 @@
 import { api, setAuthorizationHeader, removeAuthorizationheader } from './connection.ts'
-import { SignupDto, CreateAdvertDto, Advert, Tag, FiltersType, Credentials, Login  } from "../models/models.ts"
+import { SignupDto, CreateAdvertDto, Advert, Tag, Credentials, Login  } from "../models/models.ts"
 import storage from '../utils/storage.ts';
 
 
@@ -70,18 +70,10 @@ export const createAdvert = async (data: CreateAdvertDto): Promise<Advert> => {
   };
   
   
-  export const getAdverts = async (filters: FiltersType): Promise<Advert[]> => {
+  export const getAdverts = async (): Promise<Advert[]> => {
     try {
-      const params: Record<string, any> = {};
-      if (filters.name) params.name = filters.name;
-      if (filters.minPrice && filters.maxPrice) {
-        params.price = [Number(filters.minPrice), Number(filters.maxPrice)];
-      }
-      if (filters.sale !== undefined ) params.sale  = filters.sale
-      if (filters.tag ) params.tags = filters.tag;
     
-      const response = await api.get<Advert[]>("/v1/adverts", { params });
-     // console.log("Respuesta de la API de getAdverts:", response.data)
+      const response = await api.get<Advert[]>("/v1/adverts");
       return response.data;
     } catch (error) {
       console.log("Error en getadverts:", error)

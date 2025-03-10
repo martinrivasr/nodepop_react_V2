@@ -15,9 +15,6 @@ export default function AuthButton() {
   const { isLogged, rememberMe } = useAppSelector(getIslogged);
   const dispatch = useAppDispatch()
 
-  console.log("estado de isLogged en authbutton:", isLogged)
-  console.log("estado de rememberMe en authbutton:", rememberMe)
-  console.log("estado de accessToken en authbutton:", accessToken)
   useEffect(() => {
     if (accessToken) {
       setAuthorizationHeader(accessToken);

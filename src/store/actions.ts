@@ -1,7 +1,10 @@
 import { Credentials } from "../models/models";
-import { Appthunk, useAppSelector } from ".";
+import { Appthunk } from ".";
 import { isApiClientError } from "../services/connection";
 
+type AuthLoginPending = {
+    type: "auth/login/pending"
+}
 
 type AuthLoginFulfilled = {
     type: "auth/login/fulfilled";
@@ -10,7 +13,7 @@ type AuthLoginFulfilled = {
 
 type AuthLoginRejected = {
     type: "auth/login/rejected";
-    payload: Error;
+    payload: string
 }
 
 type AuthLogout = {
@@ -21,6 +24,9 @@ type UiResetError = {
     type: "ui/reset-error"
 }
 
+export const authLoginPending = (): AuthLoginPending => ({
+    type: "auth/login/pending"
+})
 
 export const authLoginFulfilled = (payload: { rememberMe: boolean }): AuthLoginFulfilled =>({
     type: "auth/login/fulfilled",
@@ -30,7 +36,7 @@ export const authLoginFulfilled = (payload: { rememberMe: boolean }): AuthLoginF
 
 export const authLoginRejected = (error: Error): AuthLoginRejected =>({
     type:"auth/login/rejected",
-    payload:error
+    payload:error.message
 })
 
 export const authLogout = (): AuthLogout =>({
@@ -43,8 +49,7 @@ export const uiResetError = (): UiResetError =>({
 
 export function authLogin(credentials:Credentials, rememberMe:boolean): Appthunk<Promise<void>>{
     return async function (dispatch, _getState, {api, router }){
-        console.log("Ejecutando authLogin");
-
+        dispatch(authLoginPending())
         try {
             await api.services.login(credentials,rememberMe)
             dispatch(authLoginFulfilled({ rememberMe }));
@@ -53,7 +58,6 @@ export function authLogin(credentials:Credentials, rememberMe:boolean): Appthunk
         } catch (error) {
             if(isApiClientError(error)){
                 dispatch(authLoginRejected(error))
-                console.log(error)
             }
             
         }
@@ -62,6 +66,7 @@ export function authLogin(credentials:Credentials, rememberMe:boolean): Appthunk
 }
 
 export type Actions = 
+| AuthLoginPending
 | AuthLogout
 | AuthLoginFulfilled
 | AuthLoginRejected

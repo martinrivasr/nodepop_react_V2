@@ -1,6 +1,5 @@
-import React, { useEffect, useState}from "react";
+import React, { useState}from "react";
 import { FiltersType } from "../models/models";
-import { getTags } from "../services/api";
 import TagDropdownSelector from "./TagDropDownSelector";
 
 interface FiltersProps {
@@ -23,9 +22,9 @@ const Filters: React.FC<FiltersProps> = ({ filters, onFilterChange }) => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(),
+    console.log("📌 Filtros enviados desde Filters.tsx:"),
     onFilterChange(localFilters);
-     
   };
 
   const handleResetFilters = () =>{
@@ -48,7 +47,12 @@ const Filters: React.FC<FiltersProps> = ({ filters, onFilterChange }) => {
           <label htmlFor="tag" className="form-label">
             Tag
           </label>
-          <TagDropdownSelector selectedTags={filters.tag} onChange={(tags) => onFilterChange({ ...filters, tag:tags })} />          
+          
+          <TagDropdownSelector 
+                              selectedTags={localFilters.tag} 
+                              onChange={(tags) => setLocalFilters(prev => ({ ...prev, tag: tags }))} 
+            />
+        
         </div>
         <div className="mb-3">
           <label htmlFor="minPrice" className="form-label">

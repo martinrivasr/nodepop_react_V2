@@ -20,8 +20,8 @@ const TagDropdownSelector: React.FC<TagDropdownSelectorProps > =({ selectedTags,
                 onChange(Array.from(e.target.selectedOptions, (option) => option.value))
             }
             >
-             {tagList.map((tag) =>(
-              <option value={tag}>{tag}</option>
+             {tagList.map((tag, index) =>(
+              <option key={index} value={tag}>{tag}</option>
              ))}
           </select>
     )

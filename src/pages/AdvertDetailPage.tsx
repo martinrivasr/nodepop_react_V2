@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { deleteAdvert } from "../services/api";
 import Message from "../components/message";
 import { useAppDispatch, useAppSelector } from "../store";
-import { advertLoaded } from "../store/actions";
-import { getAdvert } from "../store/selectors";
+import { advertDelete, advertLoaded } from "../store/actions";
+import { getAdvert, getUi } from "../store/selectors";
 
 const AdvertDetailPage: React.FC = () => {
   const params = useParams()
   const navigate = useNavigate();
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const advert = useAppSelector(getAdvert(params.id))
   const dispatch = useAppDispatch();
-
+   const {pending, message} = useAppSelector(getUi)
 
   useEffect(() => {
     if(params.id){
@@ -22,13 +20,11 @@ const AdvertDetailPage: React.FC = () => {
   }, [dispatch,params.id]);
 
   const handleDelete = async () => {
-    try {
-      await deleteAdvert(params.id!);
-      setMessage({ type: "success", text: "Anuncio eliminado con éxito" });
-      navigate("/adverts");
-    } catch (error) {
-      setMessage({ type: "error", text: "Error al eliminar el anuncio" });
+    if(!params.id){
+      return
     }
+    dispatch(advertDelete(params.id))
+
   };
 
   const openConfirmation = () => setShowConfirmation(true);

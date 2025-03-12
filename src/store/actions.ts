@@ -45,6 +45,11 @@ type AdvertPending = {
     payload: string
 }
 
+type AdvertsDeletedFulfilled = {
+    type: "advert/deleted/fulfilled"
+    payload: { id: string}
+}
+
 export const authLoginPending = (): AuthLoginPending => ({
     type: "auth/login/pending"
 })
@@ -76,6 +81,7 @@ export const advertLoadedFulfilled = (
     payload: { data: adverts, loaded: !!loaded}
 })
 
+
 export const advertRejected = (error:string | Error, customMessage?: string): AdvertsRejected =>({
     type: "advert/rejected",
     payload: customMessage
@@ -95,6 +101,10 @@ export const advertCreatedFulfilled = (
     payload: advert,
 })
 
+export const advertDeletedFulfilled = (id: string ): AdvertsDeletedFulfilled =>({
+    type: "advert/deleted/fulfilled",
+    payload:  {id }
+})
 
 
 export function authLogin(credentials:Credentials, rememberMe:boolean): Appthunk<Promise<void>>{
@@ -119,9 +129,9 @@ export function advertsLoaded(): Appthunk<Promise<void>> {
         dispatch(advertPending ("Cargando Anuncios..."))
         const state = getState();
         if (state.adverts.loaded) {
+            dispatch(uiResetError())
             return;
         }
-
         try {
             const adverts = await api.services.getAdverts();
             dispatch(advertLoadedFulfilled(adverts, true));
@@ -139,6 +149,7 @@ export function advertLoaded (advertId: string): Appthunk<Promise<void>>{
         dispatch(advertPending ("Cargando Anuncio..."))
         const state = getState();
         if(getAdvert(advertId)(state)){
+            dispatch(uiResetError())
             return
         }
         try {
@@ -151,6 +162,30 @@ export function advertLoaded (advertId: string): Appthunk<Promise<void>>{
         }
     }
 }
+
+
+export function advertDelete(advertId: string): Appthunk<Promise<void>>{
+    return async function (dispatch, getstate, { api, router }){
+        dispatch(advertPending("Eliminando anuncio ..."))
+        const state = getstate();
+        const advert = getAdvert(advertId)(state)
+        if(!advert){
+            dispatch(advertRejected("El anuncio no existe en el estado", "Error al eliminar el anuncio"));
+            return
+        }
+            try {
+                await api.services.deleteAdvert(advertId);
+                dispatch(advertDeletedFulfilled(advertId))
+                await router.navigate(`/adverts`)
+            } catch (error) {
+                if(isApiClientError(error)){
+                    console.log("Error al borrar el anuncio.Intenta nuevamente.", error)
+                    dispatch(advertRejected(error, "Error al borrar  el anuncio.Intenta nuevamente"));
+                }
+            } 
+    }
+}
+
 
 export function advertCreate(
     advertContent: CreateAdvertDto
@@ -183,3 +218,4 @@ export type Actions =
 | AdvertsRejected
 | AdvertCreatedFulfilled
 | AdvertPending
+| AdvertsDeletedFulfilled

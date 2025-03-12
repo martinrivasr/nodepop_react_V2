@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getAdvertById, deleteAdvert } from "../services/api";
+import { deleteAdvert } from "../services/api";
 import Message from "../components/message";
+import { useAppDispatch, useAppSelector } from "../store";
+import { advertLoaded } from "../store/actions";
+import { getAdvert } from "../store/selectors";
 
 const AdvertDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams()
   const navigate = useNavigate();
-  const [advert, setAdvert] = useState<any>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const advert = useAppSelector(getAdvert(params.id))
+  const dispatch = useAppDispatch();
+
 
   useEffect(() => {
-    const fetchAdverts = async () => {
-      try {
-        const data = await getAdvertById(id!);
-        setAdvert(data);
-      } catch (error) {
-        setMessage({ type: "error", text: "Error al cargar el anuncio, el anuncio no existe" });
-      }
-    };
-    fetchAdverts();
-  }, [id]);
+    if(params.id){
+      dispatch (advertLoaded(params.id)) 
+    }
+  }, [dispatch,params.id]);
 
   const handleDelete = async () => {
     try {
-      await deleteAdvert(id!);
+      await deleteAdvert(params.id!);
       setMessage({ type: "success", text: "Anuncio eliminado con éxito" });
       navigate("/adverts");
     } catch (error) {

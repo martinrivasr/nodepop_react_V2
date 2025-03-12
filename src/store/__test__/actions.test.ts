@@ -2,7 +2,8 @@ import { describe, test, expect } from "vitest";
 import { authLogout,
         authLoginFulfilled,
         authLoginRejected,
-        authLoginPending
+        authLoginPending,
+        advertLoadedFulfilled,
         } from "../actions";
 
 describe("Actions test ", () => {

@@ -13,8 +13,6 @@ import { getadvertsSelector, getIslogged, getUi } from "../store/selectors";
 const AdvertsPage = () => {
   const [allAdverts, setAllAdverts ] = useState<Advert[]>([]);
   const { isLogged, } = useAppSelector(getIslogged);
-  
-
   const [filters, setFilters] = useState<FiltersType>({
     tag: [],
     minPrice: "",

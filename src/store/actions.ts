@@ -1,6 +1,7 @@
-import { Advert, Credentials } from "../models/models";
+import { Advert, CreateAdvertDto, Credentials } from "../models/models";
 import { Appthunk } from ".";
 import { isApiClientError } from "../services/connection";
+import { getAdvert } from "./selectors";
 
 type AuthLoginPending = {
     type: "auth/login/pending"
@@ -29,14 +30,25 @@ type AdvertsLoadedFulfilled = {
     payload: { data: Advert[], loaded: boolean}
 }
 
-type AdvertsLoadedRejected = {
-    type: "advert/loaded/rejected";
+type AdvertCreatedFulfilled = {
+    type : "adverts/created/fulfilled",
+    payload: Advert,
+}
+
+type AdvertsRejected = {
+    type: "advert/rejected";
+    payload: string
+}
+
+type AdvertPending = {
+    type: "advert/pending"
     payload: string
 }
 
 export const authLoginPending = (): AuthLoginPending => ({
     type: "auth/login/pending"
 })
+
 
 export const authLoginFulfilled = (payload: { rememberMe: boolean }): AuthLoginFulfilled =>({
     type: "auth/login/fulfilled",
@@ -64,10 +76,25 @@ export const advertLoadedFulfilled = (
     payload: { data: adverts, loaded: !!loaded}
 })
 
-export const advertLoadedRejected = (error:Error): AdvertsLoadedRejected =>({
-    type: "advert/loaded/rejected",
-    payload: error.message
+export const advertRejected = (error:string | Error, customMessage?: string): AdvertsRejected =>({
+    type: "advert/rejected",
+    payload: customMessage
+        ? `${customMessage}: ${typeof error === "string" ? error : error.message}`
+        : typeof error === "string" ? error: error.message
 })
+
+export const advertPending = (message: string): AdvertPending =>({
+    type: "advert/pending",
+    payload: message
+})
+
+export const advertCreatedFulfilled = (
+    advert: Advert,
+) : AdvertCreatedFulfilled => ({
+    type: "adverts/created/fulfilled",
+    payload: advert,
+})
+
 
 
 export function authLogin(credentials:Credentials, rememberMe:boolean): Appthunk<Promise<void>>{
@@ -89,6 +116,7 @@ export function authLogin(credentials:Credentials, rememberMe:boolean): Appthunk
 
 export function advertsLoaded(): Appthunk<Promise<void>> {
     return async function (dispatch, getState, { api }) {
+        dispatch(advertPending ("Cargando Anuncios..."))
         const state = getState();
         if (state.adverts.loaded) {
             return;
@@ -100,13 +128,50 @@ export function advertsLoaded(): Appthunk<Promise<void>> {
         } catch (error) {
             if(isApiClientError(error)){
                 console.error("Error al cargar anuncios:", error);
-                dispatch(advertLoadedRejected(error));
+                dispatch(advertRejected(error, "Error al cargar los anuncions. intente nuevamente"));
             }
 
         }
     };
 }
+export function advertLoaded (advertId: string): Appthunk<Promise<void>>{
+    return async function(dispatch, getState, { api }){
+        dispatch(advertPending ("Cargando Anuncio..."))
+        const state = getState();
+        if(getAdvert(advertId)(state)){
+            return
+        }
+        try {
+            const advert = await api.services.getAdvertById(advertId);
+            dispatch(advertLoadedFulfilled([advert], true ))
+        } catch (error) {
+            if(isApiClientError(error)){
+                dispatch(advertRejected(error, "Error al cargar el anuncio. Intente nuevamente"))
+            }
+        }
+    }
+}
 
+export function advertCreate(
+    advertContent: CreateAdvertDto
+) : Appthunk<Promise<Advert>>{
+    return async function (dispatch, _getState, {api, router }){
+        dispatch(advertPending ("Creando Anuncio..."))
+        try {
+            const advertCreated = await api.services.createAdvert(advertContent);
+            const advert = await api.services.getAdvertById(advertCreated.id.toString())
+            dispatch(advertCreatedFulfilled(advert));
+            await router.navigate(`/adverts/${advert.id}`)
+            return advert
+        } catch (error) {
+            if(isApiClientError(error)){
+                console.log("Error al crear el anuncio.Intenta nuevamente.", error)
+                dispatch(advertRejected(error, "Error al crear el anuncio.Intenta nuevamente"));
+            }
+            throw error;
+        }
+    }
+}
 
 export type Actions = 
 | AuthLoginPending
@@ -115,4 +180,6 @@ export type Actions =
 | AuthLoginRejected
 | UiResetError
 | AdvertsLoadedFulfilled
-| AdvertsLoadedRejected
+| AdvertsRejected
+| AdvertCreatedFulfilled
+| AdvertPending

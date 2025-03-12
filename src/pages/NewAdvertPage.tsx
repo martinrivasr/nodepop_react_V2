@@ -1,9 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createAdvert } from "../services/api";
 import Message from "../components/message"
 import TagCheckBoxSelector from "../components/TagCheckBoxSelector";
+import { useAppDispatch } from "../store";
+import { advertCreate } from "../store/actions";
 
 const NewAdvertPage = () =>{
     const [name, setName] = useState("");
@@ -14,7 +15,7 @@ const NewAdvertPage = () =>{
     const [message, setMessage] = useState<{type: "success" | "error" | "info";text:string} | null>(null);
     const navigate = useNavigate()
     const [isloading, setIsLoading ] = useState(false)
-
+    const dispatch = useAppDispatch()
 
     const handleSubmit = async(event: React.FormEvent) => {
         event.preventDefault();
@@ -27,7 +28,7 @@ const NewAdvertPage = () =>{
             setMessage({ type:"error", text: "Debe seleccionar al menos un tag"})
         }
 
-        setIsLoading(true)
+       
 
         try{
             const advertData = {
@@ -38,16 +39,8 @@ const NewAdvertPage = () =>{
                 photo: photo || undefined,
             };
 
-            const response = await createAdvert(advertData);
+            dispatch(advertCreate(advertData))
 
-            if(!response.id){
-                setMessage({ type: "error", text:"Error. Nos e pudo obtener el ID del anuncio"});
-                setIsLoading(false);
-                return;
-            }
-
-            setMessage({ type: "success", text:"Anuncio creado con éxito. Redirigiendo ..."})
-            navigate(`/adverts/${response.id}`)
         } catch (error) {
             setMessage({ type:"error", text: "Error al crear el anuncio.Intenta nuevamente."})
         } finally{

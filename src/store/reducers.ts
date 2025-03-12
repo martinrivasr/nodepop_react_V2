@@ -1,3 +1,4 @@
+import Message from "../components/message";
 import { Advert } from "../models/models";
 import { Actions } from "./actions";
 
@@ -51,8 +52,10 @@ export function auth(
                 return { pending:false, message:{type: "error", text : action.payload}};
             case "auth/logout":
                 return { ...state, message:{type: "success", text: "Sesión cerrada correctamente"}}
-            case "advert/loaded/rejected":
+            case "advert/rejected":
                 return { pending:false, message:{type: "error", text : action.payload}};
+            case "advert/pending":
+                return { pending: true, message:{type:"info", text : action.payload}}
             default:
                 return state;
         }
@@ -67,6 +70,8 @@ export function auth(
                 return state.data === action.payload.data
                         ? state
                         : { ...state, data: action.payload.data, loaded: action.payload.loaded };
+            case "adverts/created/fulfilled":
+                    return { ...state, data: [...(state.data || []), action.payload] };
             default:
                 return state;
         }

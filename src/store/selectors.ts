@@ -11,3 +11,6 @@ export const getadvertsSelector = createSelector(
     [getAdvertsState],
     (advertsState) => advertsState.data ?? []
 );
+
+export const getAdvert = (advertId?: string ) => (state:RootState) =>
+    state.adverts.data?.find((advert) => advert.id === advertId)

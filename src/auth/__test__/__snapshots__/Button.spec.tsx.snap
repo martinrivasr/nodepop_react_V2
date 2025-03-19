@@ -1,0 +1,21 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AuthButton Snapshot Test > should match with the snapshot when the user is logged 1`] = `
+<DocumentFragment>
+  <button
+    class="btn btn-primary  ms-3"
+  >
+    Logout
+  </button>
+</DocumentFragment>
+`;
+
+exports[`AuthButton Snapshot Test > should match with the snapshot when the user is not logged 1`] = `
+<DocumentFragment>
+  <button
+    class="btn btn-primary ms-auto"
+  >
+    Login
+  </button>
+</DocumentFragment>
+`;

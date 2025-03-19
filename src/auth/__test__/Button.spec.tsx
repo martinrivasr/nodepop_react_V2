@@ -8,7 +8,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 
 describe("AuthButton Snapshot Test", () => {
-  test("shpuld match with the snapshot when the user is not logged", () => {
+  test("should match with the snapshot when the user is not logged", () => {
     
     const router = createBrowserRouter([{ path: "*", element: <AuthButton /> }]);
     const store = configureStore({ auth: { isLogged: false, rememberMe: false } }, router);
@@ -25,9 +25,9 @@ describe("AuthButton Snapshot Test", () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
-  test("shpuld match with the snapshot when the user is logged", () => {
+  test("should match with the snapshot when the user is logged", () => {
     const router = createBrowserRouter([{ path: "*", element: <AuthButton /> }]);
-    const store = configureStore({ auth: { isLogged: false, rememberMe: false } }, router);
+    const store = configureStore({ auth: { isLogged: true, rememberMe: true } }, router);
 
     const { asFragment } = render(
       <Provider store={store}>

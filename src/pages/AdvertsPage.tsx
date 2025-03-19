@@ -8,6 +8,7 @@ import { useFilteredAdverts } from "../hooks/useFilteredAdverts";
 import { useAppDispatch, useAppSelector } from "../store";
 import { advertsLoaded } from "../store/actions";
 import { getadvertsSelector, getIslogged, getUi } from "../store/selectors";
+import Message from "../components/message";
 
 
 const AdvertsPage = () => {
@@ -26,6 +27,7 @@ const AdvertsPage = () => {
   const [order, setOrder] = useState<string>("asc"); 
   const [sortField, setSortField] = useState<string>("name"); 
   const {pending, message} = useAppSelector(getUi)
+  
   
   const adverts = useAppSelector(getadvertsSelector);
  
@@ -96,7 +98,7 @@ useEffect(() => {
                 onSortFieldChange={handleSortFieldChange}
               />
               <h2 className="text-center">Listado de productos</h2>
-              {!isLogged && <p className="text-center">Cargando anuncios...</p>}
+              {message && <Message type={message.type} text={message.text} />}
               {message?.text && <p className="text-center text-danger">{message.text}</p>}
               <p>Ordenando por: <strong>{sortField}</strong> | Orden: <strong>{order}</strong></p>
               {isLogged && <ProductList adverts={filteredAdverts} />}

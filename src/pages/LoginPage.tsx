@@ -39,8 +39,11 @@ export default function LoginPage () {
         <div className="text-center mb-4">
           <h2 className="fw-bold">Sign in to your account</h2>
           <p className="text-muted">Or start your 14-day free trial</p>
-        </div>
+        </div >
+        <div role="alert">
         {message && <Message type={message.type} text={message.text} />}
+        </div>
+        
         <form onSubmit={handleSubmit}>
           <FormField
               type="text"

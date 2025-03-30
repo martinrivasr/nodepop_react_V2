@@ -6,7 +6,10 @@ import storage from '../utils/storage.ts';
 
 export const login = async (credentials: Credentials, rememberMe:boolean) => {
   try {
+    const baseURL =  import.meta.env.VITE_API_BASE_URL
+    console.log(baseURL, "/auth/login" )
       const response = await api.post<Login>("/auth/login", credentials);
+
       const { accessToken } = response.data;
       storage.set("auth", accessToken);
       setAuthorizationHeader(accessToken);

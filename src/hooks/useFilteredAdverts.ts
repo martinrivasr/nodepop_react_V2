@@ -35,7 +35,7 @@ export const useFilteredAdverts = (
 
     if ((filters.tag ?? []).length > 0) {
       filtered = filtered.filter(advert =>
-        (filters.tag ?? []).some((tag: string) => advert.tags.includes(tag))
+        advert.tags.some((t) => (filters.tag ?? []).includes(t))
       );
     }
 

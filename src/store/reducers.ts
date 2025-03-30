@@ -1,9 +1,10 @@
-import { Advert } from "../models/models";
+import { Advert, Tag } from "../models/models";
 import { Actions } from "./actions";
 
 export type State = {
     auth:{ isLogged:boolean; rememberMe: boolean};
     adverts: { data:Advert[] | null; loaded: boolean};
+tags: {data:Tag[] | null; loaded: boolean}
     ui: {
         pending:boolean;
         message: { type: "success" | "error" | "info"; text: string} | null;
@@ -13,6 +14,7 @@ export type State = {
 const defaultState: State = {
     auth:{ isLogged:false, rememberMe: false },
     adverts: {data:null, loaded:false},
+    tags:{data:null, loaded:false},
     ui: {
         pending:false,
         message: null,
@@ -57,6 +59,8 @@ export function auth(
                 return { pending: true, message:{type:"info", text : action.payload}}
             case "advert/loaded/fulfilled":
                 return { pending: false, message: null}
+            case "tags/rejected":
+                return { pending:false, message:{type: "error", text : action.payload}};
             default:
                 return state;
         }
@@ -78,6 +82,28 @@ export function auth(
                             ...state, 
                                 data: (state.data || []).filter(advert => advert.id !== action.payload.id)
                             };
+            default:
+                return state;
+        }
+    }
+
+
+    export function tags (
+        state = defaultState.tags,
+        action: Actions,
+    ): State["tags"] {
+        switch(action.type) {
+            case "tags/loaded/fulfilled":
+                return  {
+                        data: action.payload.data, 
+                        loaded: true};
+
+            case "tags/pending":
+                return  {
+                    data: null, 
+                    loaded: false
+                };
+
             default:
                 return state;
         }

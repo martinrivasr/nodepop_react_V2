@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
+//import "./index.css";
+import "./styles/index.css"
 import App from './App.tsx'
 import storage from "./utils/storage.ts"
 import { setAuthorizationHeader } from "./services/connection.ts";

@@ -11,7 +11,7 @@ const AdvertDetailPage: React.FC = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const advert = useAppSelector(getAdvert(params.id))
   const dispatch = useAppDispatch();
-   const {pending, message} = useAppSelector(getUi)
+   const { message} = useAppSelector(getUi)
 
   useEffect(() => {
     if(params.id){

@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode, useState } from "react";
 import { AuthContext } from "./context";
 import storage from '../utils/storage';
 

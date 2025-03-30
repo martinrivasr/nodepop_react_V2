@@ -23,7 +23,7 @@ const Filters: React.FC<FiltersProps> = ({ filters, onFilterChange }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(),
-    onFilterChange(localFilters);
+    onFilterChange({ ...localFilters });
   };
 
   const handleResetFilters = () =>{
@@ -49,7 +49,9 @@ const Filters: React.FC<FiltersProps> = ({ filters, onFilterChange }) => {
           
           <TagDropdownSelector 
                               selectedTags={localFilters.tag} 
-                              onChange={(tags) => setLocalFilters(prev => ({ ...prev, tag: tags }))} 
+                              onChange={(tags) => setLocalFilters(prev => ({ ...prev, tag: tags.map(tag => tag.trim()) }))}
+
+
             />
         
         </div>

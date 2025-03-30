@@ -1,4 +1,4 @@
-import { Advert, CreateAdvertDto, Credentials } from "../models/models";
+import { Advert, CreateAdvertDto, Credentials, Tag } from "../models/models";
 import { Appthunk } from ".";
 import { isApiClientError } from "../services/connection";
 import { getAdvert } from "./selectors";
@@ -48,6 +48,22 @@ type AdvertPending = {
 type AdvertsDeletedFulfilled = {
     type: "advert/deleted/fulfilled"
     payload: { id: string}
+}
+
+
+type TagsLoadedFulfilled = {
+    type: "tags/loaded/fulfilled"
+    payload: { data: Tag[], loaded: boolean}
+}
+
+type TagsRejected = {
+    type: "tags/rejected";
+    payload: string
+}
+
+type TagsPending = {
+    type: "tags/pending"
+    payload: string
 }
 
 export const authLoginPending = (): AuthLoginPending => ({
@@ -107,6 +123,26 @@ export const advertDeletedFulfilled = (id: string ): AdvertsDeletedFulfilled =>(
 })
 
 
+export const tagsLoadedFulfilled = (
+    tags: Tag[],
+    loaded?: boolean,
+): TagsLoadedFulfilled =>({
+    type: "tags/loaded/fulfilled",
+    payload: { data: tags, loaded: !!loaded}
+})
+
+export const tagsPending = (message: string): TagsPending =>({
+    type: "tags/pending",
+    payload: message
+})
+
+export const tagsRejected = (error:string | Error, customMessage?: string): TagsRejected =>({
+    type: "tags/rejected",
+    payload: customMessage
+        ? `${customMessage}: ${typeof error === "string" ? error : error.message}`
+        : typeof error === "string" ? error: error.message
+})
+
 export function authLogin(credentials:Credentials, rememberMe:boolean): Appthunk<Promise<void>>{
     return async function (dispatch, _getState, {api, router }){
         dispatch(authLoginPending())
@@ -144,6 +180,8 @@ export function advertsLoaded(): Appthunk<Promise<void>> {
         }
     };
 }
+
+
 export function advertLoaded (advertId: string): Appthunk<Promise<void>>{
     return async function(dispatch, getState, { api }){
         dispatch(advertPending ("Cargando Anuncio..."))
@@ -208,6 +246,29 @@ export function advertCreate(
     }
 }
 
+
+export function tagsLoaded(): Appthunk<Promise<void>> {
+    return async function (dispatch, getState, { api }) {
+        dispatch(tagsPending ("Cargando Anuncios..."))
+        const state = getState();
+        if (state.tags.loaded) {
+            dispatch(uiResetError())
+            return;
+        }
+        try {
+            const tags = await api.services.getTags();
+            dispatch(tagsLoadedFulfilled(tags, true));
+        } catch (error) {
+            if(isApiClientError(error)){
+                console.error("Error al cargar anuncios:", error);
+                dispatch(tagsRejected(error, "Error al cargar los tags. "));
+            }
+
+        }
+    };
+}
+
+
 export type Actions = 
 | AuthLoginPending
 | AuthLogout
@@ -219,3 +280,6 @@ export type Actions =
 | AdvertCreatedFulfilled
 | AdvertPending
 | AdvertsDeletedFulfilled
+| TagsLoadedFulfilled
+| TagsPending
+| TagsRejected

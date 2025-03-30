@@ -1,5 +1,5 @@
 import React  from "react";
-import useTags   from "../hooks/usetags"
+import useTags   from "../hooks/useTagsFromRedux"
 
 interface TagCheckBoxSelectorProps{
     selectedTags:string[];
